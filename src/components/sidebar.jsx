@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { Home, Search, Library, Heart, Plus, LogOut } from "lucide-react";
 import { useAuth } from "../context/FirebaseContext";
 import { useToast } from "../context/toastContext";
+import { Link } from "react-router-dom";
 
 export const Sidebar = () => {
   const navigate = useNavigate();
@@ -17,7 +18,7 @@ export const Sidebar = () => {
     { icon: Heart, label: "Liked Songs", path: "/favorites" },
   ];
 
-  const playlists = ["Chill Vibes", "Workout Energy", "Focus Flow"];
+  const playlists = [];
 
   const handleLogout = async () => {
     try {
@@ -31,7 +32,7 @@ export const Sidebar = () => {
 
   return (
     <>
-      <div className=" fixed left-0 w-64 bg-card border-r border-border h-screen flex flex-col">
+      <div className=" fixed left-0 top-0 w-64 bg-card border-r border-border h-screen flex flex-col">
         <div className="p-6">
           <div className="flex items-center gap-2">
             <div className="text-neon-green">
@@ -99,7 +100,6 @@ export const Sidebar = () => {
           </div>
         </div>
 
-        {/* User / Logout Section */}
         <div className="p-4 border-t border-border space-y-2">
           <div className="flex items-center gap-3 px-3 py-2">
             <div className="w-8 h-8 rounded-full bg-neon-green flex items-center justify-center shrink-0">
@@ -107,20 +107,15 @@ export const Sidebar = () => {
                 {user?.email?.charAt(0) || "U"}
               </span>
             </div>
-            <span className="truncate text-sm font-medium text-foreground">
+            <Link
+              to="/profile"
+              className="truncate text-sm font-medium text-foreground"
+            >
               {user?.displayName ||
                 user?.email?.split("@")[0] ||
                 "User Profile"}
-            </span>
+            </Link>
           </div>
-
-          <button
-            onClick={handleLogout}
-            className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-destructive hover:bg-destructive/10 transition-colors text-sm font-medium"
-          >
-            <LogOut className="w-4 h-4" />
-            <span>Logout</span>
-          </button>
         </div>
       </div>
     </>

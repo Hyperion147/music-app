@@ -18,7 +18,6 @@ function SignUp() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  // Auto-navigate if user is already authenticated
   useEffect(() => {
     if (user && !loading) {
       navigate("/home");
@@ -39,13 +38,11 @@ function SignUp() {
       navigate("/home");
     } catch (error) {
       showError("User Alreasy exist");
-      // showError("Signup failed" );
     }
   };
 
   return (
     <>
-      <ThemeToggle />
       <div className="bg-card border border-border rounded-2xl p-8 shadow-lg">
         <h2 className="text-center mb-2">Create account</h2>
         <p className="text-center text-muted-foreground mb-6">

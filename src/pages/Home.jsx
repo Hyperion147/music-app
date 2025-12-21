@@ -9,7 +9,7 @@ function Home() {
   return (
     <>
       <Sidebar />
-      <div className="min-h-screen bg-background text-foreground p-8">
+      <div className="min-h-screen bg-background text-foreground p-8 ml-64">
         <header className="flex justify-between items-center mb-8">
           <div className="flex items-center gap-2">
             <Music className="text-neon-green h-8 w-8" />

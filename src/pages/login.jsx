@@ -39,7 +39,6 @@ function Login() {
 
   return (
     <>
-      <ThemeToggle />
       <div className="bg-background border border-border rounded-2xl p-8 shadow-lg">
         <h2 className="text-center mb-2">Welcome back</h2>
         <p className="text-center text-muted-foreground mb-6">
