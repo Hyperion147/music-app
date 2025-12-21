@@ -2,6 +2,7 @@ import { useAuth } from "../context/FirebaseContext";
 import { Button } from "@/components/shad/button";
 import { LogOut, Music } from "lucide-react";
 import { Sidebar } from "../components/sidebar";
+import PlayerBar from "../components/ui/PlayerBar";
 function Home() {
   const { user, logout } = useAuth();
 
@@ -30,6 +31,7 @@ function Home() {
           </div>
         </main>
       </div>
+      <PlayerBar />
     </>
   );
 }
