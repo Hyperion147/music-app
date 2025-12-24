@@ -90,7 +90,7 @@ export default function PlayerBar() {
           <SkipForward className="hidden md:block dark:hover:bg-neon-green hover:bg-gray-200 rounded h-8 w-8 p-1.5"/>
         </div>
 
-        <div className="hidden md:block w-1/3 md:flex justify-end">
+        <div className="hidden w-1/3 md:flex justify-end">
           <VolumeControl
             volume={volume}
             setVolume={setVolume}
