@@ -65,7 +65,7 @@ export const Profile = ({ playlists, setPlaylists, showPlaylist, setShowPlaylist
       )}
 
       <motion.div
-        className="flex-1 p-8 pb-32 ml-64 overflow-hidden"
+        className="flex-1 p-8 pb-32 lg:ml-64 overflow-hidden"
         initial="hidden"
         animate="visible"
         variants={containerVariants}

@@ -101,7 +101,7 @@ export const Sidebar = ({ playlists = [],onAddPlaylist }) => {
 
         <div className="p-4 border-t border-border space-y-2">
 
-          <div className="flex items-center gap-3 px-3 py-2">
+          <div className="flex items-center gap-3 dark:hover:bg-neon-green-hover hover:bg-gray-200 rounded-xl px-3 py-2">
             <div className="w-8 h-8 rounded-full bg-neon-green flex items-center justify-center shrink-0">
               <span className="text-black font-bold text-xs uppercase">
                 {user?.email?.charAt(0) || "U"}
