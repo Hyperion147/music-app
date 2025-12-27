@@ -1,8 +1,27 @@
 {
-  "name": "music",
+  "name": "musicflow",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
+  "description": "A modern, responsive music streaming web application built with React and Firebase",
+  "keywords": [
+    "music",
+    "streaming",
+    "react",
+    "firebase",
+    "playlist",
+    "responsive"
+  ],
+  "author": "MusicFlow Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/musicflow.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/musicflow/issues"
+  },
+  "homepage": "https://github.com/yourusername/musicflow#readme",
   "lint-staged": {
     "**/*": "prettier --write --ignore-unknown"
   },

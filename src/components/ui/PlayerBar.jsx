@@ -1,7 +1,10 @@
-import { SkipBack, SkipForward, Play } from "lucide-react";
+import { SkipBack, SkipForward, Play, Heart, Plus } from "lucide-react";
+import { useState } from "react";
 import VolumeControl from "./VolumeControl";
 import ProgressBar from "./ProgressBar";
+import PlaylistModal from "./PlaylistModal";
 import { useMusicPlayer } from "../../context/MusicContext";
+import { useLikedSongs } from "../../context/LikedSongsContext";
 
 export default function PlayerBar() {
   const {
@@ -17,6 +20,21 @@ export default function PlayerBar() {
     skipPrevious,
     audioRef,
   } = useMusicPlayer();
+
+  const { toggleLike, isLiked } = useLikedSongs();
+  const [playlistModalOpen, setPlaylistModalOpen] = useState(false);
+
+  const handleLikeClick = () => {
+    if (currentSong) {
+      toggleLike(currentSong);
+    }
+  };
+
+  const handleAddToPlaylist = () => {
+    if (currentSong) {
+      setPlaylistModalOpen(true);
+    }
+  };
 
   const extractImageUrl = (song) => {
     if (!song || !song.image) return null;
@@ -49,8 +67,8 @@ export default function PlayerBar() {
   const imageUrl = extractImageUrl(currentSong);
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-black border-t border-border text-white z-50">
-      <div className="px-6 pt-2">
+    <div className="fixed bottom-0 left-0 right-0 bg-black/95 backdrop-blur-md border-t border-border/50 text-white z-50 shadow-2xl">
+      <div className="px-3 sm:px-6 pt-2">
         <ProgressBar
           progress={progress}
           setProgress={seekTo}
@@ -60,14 +78,15 @@ export default function PlayerBar() {
         />
       </div>
 
-      <div className="h-20 px-6 flex items-center justify-between">
-        <div className="flex items-center gap-4 w-1/3">
-          <div className="relative w-12 h-12 flex-shrink-0">
+      <div className="h-14 sm:h-16 px-3 sm:px-6 flex items-center justify-between gap-2 sm:gap-4">
+        {/* Song Info - Left Side */}
+        <div className="flex items-center gap-2 sm:gap-4 flex-1 min-w-0 sm:w-1/3">
+          <div className="relative w-10 h-10 sm:w-12 sm:h-12 flex-shrink-0">
             {imageUrl ? (
               <img
                 src={imageUrl}
                 alt={currentSong.name || currentSong.title}
-                className="w-12 h-12 rounded object-cover"
+                className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl object-cover shadow-lg"
                 onError={(e) => {
                   console.error("PlayerBar image failed to load:", imageUrl);
                   e.target.style.display = "none";
@@ -76,64 +95,109 @@ export default function PlayerBar() {
               />
             ) : null}
             <div
-              className={`absolute inset-0 w-12 h-12 rounded bg-gray-800 flex items-center justify-center ${imageUrl ? "hidden" : ""}`}
+              className={`absolute inset-0 w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-gray-700 to-gray-800 flex items-center justify-center shadow-lg ${imageUrl ? "hidden" : ""}`}
             >
-              <Play className="w-6 h-6 text-gray-400" />
+              <Play className="w-4 h-4 sm:w-6 sm:h-6 text-gray-400" />
             </div>
           </div>
-          <div className="min-w-0">
-            <p className="text-sm font-medium truncate text-white">
+          <div className="min-w-0 flex-1 hidden sm:block">
+            <p className="text-sm font-semibold truncate text-white">
               {currentSong.name || currentSong.title}
             </p>
-            <p className="text-xs text-gray-400 truncate">
+            <p className="text-xs text-gray-400 truncate mt-0.5">
               {currentSong.primaryArtists ||
                 currentSong.artist ||
                 currentSong.artists?.primary?.[0]?.name ||
                 "Unknown Artist"}
             </p>
           </div>
+          <button
+            onClick={handleLikeClick}
+            className={`p-1.5 sm:p-2 rounded-full hover:bg-gray-800/50 transition-all duration-200 flex-shrink-0 ${
+              isLiked(currentSong.id)
+                ? "text-red-500 scale-110"
+                : "text-gray-400 hover:text-white hover:scale-105"
+            }`}
+          >
+            <Heart
+              className={`w-4 h-4 sm:w-5 sm:h-5 ${isLiked(currentSong.id) ? "fill-current" : ""}`}
+            />
+          </button>
+          <button
+            onClick={handleAddToPlaylist}
+            className="p-2 rounded-full hover:bg-gray-800/50 transition-all duration-200 text-gray-400 hover:text-white hover:scale-105"
+          >
+            <Plus className="w-5 h-5" />
+          </button>
         </div>
 
-        <div className="flex items-center gap-6 w-1/3 justify-center">
+        {/* Controls - Center */}
+        <div className="flex items-center gap-3 sm:gap-6 justify-center flex-shrink-0">
           <button
             onClick={skipPrevious}
-            className="text-gray-400 hover:text-white transition-colors"
+            className="text-gray-400 hover:text-white transition-colors p-1.5 sm:p-2 rounded-full hover:bg-gray-800/50"
           >
-            <SkipBack className="w-5 h-5" />
+            <SkipBack className="w-4 h-4 sm:w-5 sm:h-5" />
           </button>
 
           <button
             onClick={togglePlayPause}
-            className="w-10 h-10 rounded-full bg-neon-green hover:bg-neon-green-hover flex items-center justify-center text-black cursor-pointer transition-colors"
+            className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-neon-green to-neon-green-hover hover:from-neon-green-hover hover:to-neon-green flex items-center justify-center text-black cursor-pointer transition-all duration-200 shadow-lg hover:shadow-neon-green/25 hover:scale-105"
           >
             {isPlaying ? (
-              <svg width="24" height="24" fill="currentColor">
-                <rect x="5" y="4" width="4" height="16" />
-                <rect x="15" y="4" width="4" height="16" />
+              <svg
+                width="16"
+                height="16"
+                className="sm:w-5 sm:h-5"
+                fill="currentColor"
+              >
+                <rect x="4" y="3" width="2.5" height="10" rx="1" />
+                <rect x="9.5" y="3" width="2.5" height="10" rx="1" />
               </svg>
             ) : (
-              <svg width="24" height="24" fill="currentColor">
-                <polygon points="5,3 19,12 5,21" />
+              <svg
+                width="16"
+                height="16"
+                className="sm:w-5 sm:h-5"
+                fill="currentColor"
+              >
+                <polygon points="5,2 14,8 5,14" />
               </svg>
             )}
           </button>
 
           <button
             onClick={skipNext}
-            className="text-gray-400 hover:text-white transition-colors"
+            className="text-gray-400 hover:text-white transition-colors p-1.5 sm:p-2 rounded-full hover:bg-gray-800/50"
           >
-            <SkipForward className="w-5 h-5" />
+            <SkipForward className="w-4 h-4 sm:w-5 sm:h-5" />
           </button>
         </div>
 
-        <div className="w-1/3 flex justify-end">
+        {/* Volume Control - Right Side */}
+        <div className="hidden sm:flex sm:w-1/3 justify-end">
           <VolumeControl
             volume={volume}
             setVolume={changeVolume}
             audioRef={audioRef}
           />
         </div>
+
+        {/* Mobile Add to Playlist Button */}
+        <button
+          onClick={() => setPlaylistModalOpen(true)}
+          className="sm:hidden p-1.5 rounded-full hover:bg-gray-800/50 transition-colors text-gray-400 hover:text-white flex-shrink-0"
+        >
+          <Plus className="w-4 h-4" />
+        </button>
       </div>
+
+      {/* Playlist Modal */}
+      <PlaylistModal
+        isOpen={playlistModalOpen}
+        onClose={() => setPlaylistModalOpen(false)}
+        song={currentSong}
+      />
     </div>
   );
 }

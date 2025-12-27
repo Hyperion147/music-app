@@ -4,7 +4,6 @@ import { useAuth } from "../context/FirebaseContext";
 import { Button } from "@/components/shad/button";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { useToast } from "../context/toastContext";
-import { ThemeToggle } from "../components/ui/toogleTheme.jsx";
 
 function SignUp() {
   const { showSuccess, showError } = useToast();
@@ -24,20 +23,69 @@ function SignUp() {
     }
   }, [user, loading, navigate]);
 
+  const handleGoogleSignup = async () => {
+    try {
+      await loginWithGoogle();
+      showSuccess("Account created successfully!");
+      navigate("/home");
+    } catch (error) {
+      console.error("Google signup error:", error);
+      showError(`Google signup failed: ${error.message}`);
+    }
+  };
+
+  const handleGithubSignup = async () => {
+    try {
+      await loginWithGithub();
+      showSuccess("Account created successfully!");
+      navigate("/home");
+    } catch (error) {
+      console.error("GitHub signup error:", error);
+      showError(`GitHub signup failed: ${error.message}`);
+    }
+  };
+
   const handleEmailSignup = async (e) => {
     e.preventDefault();
+
+    // Validation checks
+    if (password.length < 6) {
+      showError("Password must be at least 6 characters long");
+      return;
+    }
 
     if (password !== confirm) {
       showError("Passwords do not match");
       return;
     }
 
+    // Email format validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      showError("Please enter a valid email address");
+      return;
+    }
+
     try {
       await signupWithEmail(email, password);
-      showSuccess("Account created successfully");
+      showSuccess("Account created successfully!");
       navigate("/home");
     } catch (error) {
-      showError("User Alreasy exist");
+      console.error("Signup error:", error);
+      // Show specific Firebase error messages
+      let errorMessage = "Account creation failed";
+      if (error.code === "auth/email-already-in-use") {
+        errorMessage = "An account with this email already exists";
+      } else if (error.code === "auth/weak-password") {
+        errorMessage = "Password should be at least 6 characters";
+      } else if (error.code === "auth/invalid-email") {
+        errorMessage = "Please enter a valid email address";
+      } else if (error.code === "auth/operation-not-allowed") {
+        errorMessage = "Email/password accounts are not enabled";
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+      showError(errorMessage);
     }
   };
 
@@ -46,14 +94,14 @@ function SignUp() {
       <div className="bg-card border border-border rounded-2xl p-8 shadow-lg max-w-md w-full">
         <h2 className="text-center mb-2">Create account</h2>
         <p className="text-center text-muted-foreground mb-6">
-          Sign in to continue listening
+          Sign up to start listening
         </p>
 
         <div className="space-y-3 mb-6">
           <Button
             type="button"
             className="inline-flex items-center justify-center gap-2 w-full h-9 px-4 py-2 rounded-md border bg-background text-foreground hover:bg-accent transition"
-            onClick={loginWithGoogle}
+            onClick={handleGoogleSignup}
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24">
               <path
@@ -79,7 +127,7 @@ function SignUp() {
           <button
             type="button"
             className="inline-flex items-center justify-center gap-2 w-full h-9 px-4 py-2 rounded-md border bg-background text-foreground hover:bg-accent transition"
-            onClick={loginWithGithub}
+            onClick={handleGithubSignup}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -135,6 +183,7 @@ function SignUp() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
+              minLength={6}
             />
             <button
               type="button"
@@ -162,6 +211,7 @@ function SignUp() {
               value={confirm}
               onChange={(e) => setConfirm(e.target.value)}
               required
+              minLength={6}
             />
             <button
               type="button"

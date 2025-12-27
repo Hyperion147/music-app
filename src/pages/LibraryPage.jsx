@@ -17,7 +17,7 @@ export default function LibraryPage() {
   };
 
   return (
-    <div className="p-8 pb-32 ml-64">
+    <div className="lg:ml-64 pb-32 pt-16 lg:pt-8 px-4 sm:px-6 lg:px-8">
       <Sidebar />
 
       <div className="mb-8">

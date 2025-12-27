@@ -15,18 +15,18 @@ export default function ProgressBar({
   const percent = duration ? (progress / duration) * 100 : 0;
 
   return (
-    <div className="w-full flex items-center gap-3 text-sm text-gray-400">
-      <span className="w-10 text-right">{formatTime(progress)}</span>
+    <div className="w-full flex items-center gap-2 text-xs text-gray-400">
+      <span className="w-8 text-right">{formatTime(progress)}</span>
 
-      <div className="relative flex-1 h-2 bg-neutral-700 rounded-full">
+      <div className="relative flex-1 h-1 bg-neutral-700 rounded-full">
         <div
-          className="absolute h-2 bg-green-500 rounded-full"
+          className="absolute h-1 bg-green-500 rounded-full"
           style={{ width: `${percent}%` }}
         />
 
         <div
-          className="absolute top-1/2 w-4 h-4 bg-green-400 rounded-full -translate-y-1/2"
-          style={{ left: `calc(${percent}% - 8px)` }}
+          className="absolute top-1/2 w-3 h-3 bg-green-400 rounded-full -translate-y-1/2"
+          style={{ left: `calc(${percent}% - 6px)` }}
         />
 
         <input
@@ -45,7 +45,7 @@ export default function ProgressBar({
         />
       </div>
 
-      <span className="w-10">{formatTime(duration)}</span>
+      <span className="w-8">{formatTime(duration)}</span>
     </div>
   );
 }
