@@ -1,0 +1,70 @@
+# Source files (keep only built files for npm)
+src/
+public/
+
+# Development files
+.env*
+!.env.example
+
+# Build tools and configs
+vite.config.js
+eslint.config.js
+.prettierrc
+.prettierignore
+jsconfig.json
+components.json
+
+# Documentation (keep README.md)
+FIREBASE_SETUP.md
+STEP_BY_STEP_FIREBASE_GUIDE.md
+QUICK_FIREBASE_SETUP.md
+DEPLOYMENT.md
+
+# Development dependencies
+node_modules/
+.git/
+.github/
+.vscode/
+.idea/
+
+# Logs and cache
+*.log
+.cache/
+.eslintcache
+.stylelintcache
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.temp
+
+# Test files
+*.test.js
+*.test.jsx
+*.spec.js
+*.spec.jsx
+coverage/
+.nyc_output/
+
+# Husky hooks
+.husky/
+
+# IDE files
+*.swp
+*.swo
+*.sublime-*
+.project
+.classpath
+.settings/
+
+# Backup files
+*.bak
+*.backup
+*.old
+*.orig

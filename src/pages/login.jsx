@@ -28,12 +28,72 @@ function Login() {
   const handleEmailLogin = async (e) => {
     e.preventDefault();
 
+    // Email format validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      showError("Please enter a valid email address");
+      return;
+    }
+
+    if (password.length < 6) {
+      showError("Password must be at least 6 characters long");
+      return;
+    }
+
     try {
+      console.log("Attempting login with email:", email);
       await loginWithEmail(email, password);
-      showSuccess("Successful");
+      showSuccess("Login successful!");
       navigate("/home");
     } catch (error) {
-      showError("Login Failed");
+      console.error("Email login error:", error);
+      console.error("Error code:", error.code);
+      console.error("Error message:", error.message);
+      // Show specific Firebase error messages
+      let errorMessage = "Login failed";
+      if (error.code === "auth/invalid-credential") {
+        errorMessage =
+          "Invalid email or password. Please check your credentials and try again.";
+      } else if (error.code === "auth/user-not-found") {
+        errorMessage =
+          "No account found with this email address. Please sign up first.";
+      } else if (error.code === "auth/wrong-password") {
+        errorMessage = "Incorrect password. Please try again.";
+      } else if (error.code === "auth/invalid-email") {
+        errorMessage = "Please enter a valid email address";
+      } else if (error.code === "auth/user-disabled") {
+        errorMessage = "This account has been disabled";
+      } else if (error.code === "auth/too-many-requests") {
+        errorMessage = "Too many failed attempts. Please try again later";
+      } else if (error.code === "auth/operation-not-allowed") {
+        errorMessage =
+          "Email/password sign-in is not enabled. Please contact support.";
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+      showError(errorMessage);
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    try {
+      await loginWithGoogle();
+      showSuccess("Login successful!");
+      navigate("/home");
+    } catch (error) {
+      console.error("Google login error:", error);
+      showError(`Google login failed: ${error.message}`);
+    }
+  };
+
+  const handleGithubLogin = async () => {
+    try {
+      await loginWithGithub();
+      showSuccess("Login successful!");
+      navigate("/home");
+    } catch (error) {
+      console.error("GitHub login error:", error);
+      showError(`GitHub login failed: ${error.message}`);
     }
   };
 
@@ -49,7 +109,7 @@ function Login() {
           <Button
             type="button"
             className="inline-flex items-center justify-center gap-2 w-full h-9 px-4 py-2 rounded-md border bg-background text-foreground hover:bg-accent transition"
-            onClick={loginWithGoogle}
+            onClick={handleGoogleLogin}
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24">
               <path
@@ -75,7 +135,7 @@ function Login() {
           <button
             type="button"
             className="inline-flex items-center justify-center gap-2 w-full h-9 px-4 py-2 rounded-md border bg-background text-foreground hover:bg-accent transition"
-            onClick={loginWithGithub}
+            onClick={handleGithubLogin}
           >
             <Github className="w-5 h-5 -mr-2" />
             Continue with GitHub

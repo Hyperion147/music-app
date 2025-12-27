@@ -1,5 +1,10 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { auth, githubProvider, googleProvider } from "../services/firebase";
+import {
+  auth,
+  githubProvider,
+  googleProvider,
+  isDemoConfig,
+} from "../services/firebase";
 import {
   onAuthStateChanged,
   signOut,
@@ -81,20 +86,29 @@ export function AuthProvider({ children }) {
     }
   };
   const loginWithGoogle = async () => {
+    if (isDemoConfig) {
+      throw new Error(
+        "Firebase not configured. Please set up your Firebase project and update the .env file with real credentials.",
+      );
+    }
     try {
-      await signInWithPopup(auth, googleProvider);
-      // Redirect will happen, result will be handled by getRedirectResult
+      const result = await signInWithPopup(auth, googleProvider);
+      return { user: result.user };
     } catch (error) {
       console.log("google error", error.code, error.message);
-
       throw error;
     }
   };
 
   const loginWithGithub = async () => {
+    if (isDemoConfig) {
+      throw new Error(
+        "Firebase not configured. Please set up your Firebase project and update the .env file with real credentials.",
+      );
+    }
     try {
-      await signInWithPopup(auth, githubProvider);
-      // Redirect will happen, result will be handled by getRedirectResult
+      const result = await signInWithPopup(auth, githubProvider);
+      return { user: result.user };
     } catch (error) {
       console.log("github error: ", error.code, error.message);
       throw error;
