@@ -4,7 +4,7 @@ export default function song_details() {
   const [value, setvalue] = useState();
 
   useEffect(() => {
-    fetch(`https://music-services.onrender.com/api/songs/prJPLljw`)
+    fetch(`https://saavn.sumit.co/api/songs/prJPLljw`)
       .then((res) => res.json())
       .then((data) => setvalue(data));
   }, []);

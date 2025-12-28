@@ -38,8 +38,8 @@ function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
-      <div className="bg-background border border-border rounded-2xl p-8 shadow-lg max-w-md w-full">
+    <>
+      <div className="bg-background border border-border rounded-2xl p-8 shadow-lg">
         <h2 className="text-center mb-2">Welcome back</h2>
         <p className="text-center text-muted-foreground mb-6">
           Sign in to continue listening
@@ -148,7 +148,7 @@ function Login() {
           </Link>
         </p>
       </div>
-    </div>
+    </>
   );
 }
 

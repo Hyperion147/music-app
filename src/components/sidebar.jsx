@@ -1,15 +1,6 @@
 import React from "react";
 import { useNavigate, useLocation, NavLink } from "react-router-dom";
-import {
-  Home,
-  Search,
-  Library,
-  Heart,
-  Plus,
-  LogOut,
-  Music,
-  Users,
-} from "lucide-react";
+import { Home, Search, Library, Heart, Plus, LogOut } from "lucide-react";
 import { useAuth } from "../context/FirebaseContext";
 import { useToast } from "../context/toastContext";
 import { Link } from "react-router-dom";
@@ -25,8 +16,6 @@ export const Sidebar = () => {
     { icon: Search, label: "Search", path: "/search" },
     { icon: Library, label: "Your Library", path: "/library" },
     { icon: Heart, label: "Liked Songs", path: "/favorites" },
-    { icon: Music, label: "Genres", path: "/genres" },
-    { icon: Users, label: "Artists", path: "/artists" },
   ];
 
   const playlists = [];

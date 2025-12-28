@@ -16,8 +16,6 @@ It allows users to explore, play, and manage their favorite songs and playlists 
 - **Playlists** – Users can create custom playlists and add/remove songs easily.
 - **Favorites** – Mark and manage favorite songs for quick access.
 - **Song Preview** – Short audio preview feature for each track.
-- **Genre Browsing** – Explore music by different genres (Pop, Rock, Hip-Hop, Classical, etc.).
-- **Artist Discovery** – Browse popular artists and their top songs.
 - **Categorized Sections** – Browse by genre, artist, trending, or newly added music.
 - **Responsive UI** – Seamlessly adapts to desktop and mobile devices.
 

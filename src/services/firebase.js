@@ -10,47 +10,22 @@ import {
 } from "firebase/auth";
 
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "demo-api-key",
-  authDomain:
-    import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "demo-project.firebaseapp.com",
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "demo-project",
-  storageBucket:
-    import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "demo-project.appspot.com",
-  messagingSenderId:
-    import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "123456789",
-  appId: import.meta.env.VITE_FIREBASE_APP_ID || "1:123456789:web:abcdef",
-  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID || "G-XXXXXXXXXX",
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
 };
 
-// Only initialize Firebase if we have real config values
-let app;
-let auth;
-let githubProvider;
-let googleProvider;
-
-try {
-  app = initializeApp(firebaseConfig);
-  auth = getAuth(app);
-  githubProvider = new GithubAuthProvider();
-  googleProvider = new GoogleAuthProvider();
-} catch (error) {
-  console.warn("Firebase initialization failed:", error);
-  // Create mock auth for development
-  auth = {
-    currentUser: null,
-    onAuthStateChanged: () => () => {},
-  };
-  githubProvider = {};
-  googleProvider = {};
-}
+const app = initializeApp(firebaseConfig);
 
 let analytics;
-if (typeof window !== "undefined" && firebaseConfig.measurementId && app) {
-  try {
-    analytics = getAnalytics(app);
-  } catch (error) {
-    console.warn("Firebase Analytics initialization failed:", error);
-  }
+if (typeof window !== "undefined" && firebaseConfig.measurementId) {
+  analytics = getAnalytics(app);
 }
 
-export { auth, githubProvider, googleProvider };
+export const auth = getAuth(app);
+export const githubProvider = new GithubAuthProvider();
+export const googleProvider = new GoogleAuthProvider();

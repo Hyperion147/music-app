@@ -11,7 +11,7 @@ import {
   PlayCircle,
 } from "lucide-react";
 import { useAuth } from "../context/FirebaseContext";
-import { useTheme } from "../context/themeContext";
+import { useTheme } from "../context/ThemeContext";
 import { useToast } from "../context/toastContext";
 import { Sidebar } from "../components/sidebar";
 import { useNavigate } from "react-router-dom";
