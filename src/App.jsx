@@ -16,6 +16,7 @@ import LikedSongs from "./pages/LikedSongs.jsx";
 import LibraryPage from "./pages/LibraryPage.jsx";
 import SearchPage from "./pages/SearchPage.jsx";
 import PlaylistView from "./pages/PlaylistView.jsx";
+import ArtistPage from "./pages/ArtistPage.jsx";
 import { Profile } from "./pages/profile";
 
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -88,6 +89,15 @@ function App() {
                   element={
                     <ProtectedRoute>
                       <PlaylistView />
+                    </ProtectedRoute>
+                  }
+                />
+
+                <Route
+                  path="/artist/:id"
+                  element={
+                    <ProtectedRoute>
+                      <ArtistPage />
                     </ProtectedRoute>
                   }
                 />
