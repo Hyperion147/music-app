@@ -17,6 +17,7 @@ import LibraryPage from "./pages/LibraryPage.jsx";
 import SearchPage from "./pages/SearchPage.jsx";
 import PlaylistView from "./pages/PlaylistView.jsx";
 import ArtistPage from "./pages/ArtistPage.jsx";
+import CategoryPage from "./pages/CategoryPage.jsx";
 import { Profile } from "./pages/profile";
 import MainLayout from "./components/Layout/MainLayout";
 
@@ -47,6 +48,7 @@ function App() {
                 <Route path="/playlist/:id" element={<PlaylistView />} />
                 <Route path="/artist/:id" element={<ArtistPage />} />
                 <Route path="/profile" element={<Profile />} />
+                <Route path="/category/:category" element={<CategoryPage />} />
               </Route>
 
               <Route path="*" element={<Navigate to="/login" />} />
