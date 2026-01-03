@@ -1,28 +1,38 @@
-import { Play, Pause, Shuffle, Heart } from "lucide-react";
+import { Play, Pause, Heart } from "lucide-react";
 import { useParams, useOutletContext } from "react-router-dom";
 import AlbumSongs from "../components/Hooks/AlbumSongs";
+import {
+  addFavorite,
+  removeFavorite,
+  getFavorites,
+} from "../firebase/favorites";
+import { useEffect, useState } from "react";
+import Loader from "../components/ui/Loader";
 
 export default function AlbumPage() {
   const { id } = useParams();
 
-  // GLOBAL PLAYER STATE
   const { ids, setIds, mainId, setMainId, isPlay, setIsPlay } =
     useOutletContext();
 
-  const songs = AlbumSongs(id);
-  const sdata = songs?.data;
+  const album = AlbumSongs(id);
+  const sdata = album?.data;
 
-  if (!sdata) return <p className="p-8">Loading Top Songs...</p>;
+  const [likedIds, setLikedIds] = useState([]);
+
+  useEffect(() => {
+    getFavorites().then(setLikedIds);
+  }, []);
+
+  if (!sdata) return <Loader songsCount={sdata?.songs?.length || 10} />;
 
   const albumSongIds = sdata.songs.map((song) => song.id);
 
-  // check if currently playing song belongs to this album
   const isSameAlbum = ids.length && albumSongIds.includes(ids[mainId]);
 
   return (
-    <div className="p-8">
-      {/* ALBUM HEADER */}
-      <div className="flex flex-col md:flex-row gap-6 py-10">
+    <div className="p-0 sm:p-5 mb-20">
+      <div className="flex flex-col md:flex-row gap-6 py-10 ">
         <img
           src={sdata.image?.[2]?.url}
           alt={sdata.name}
@@ -35,17 +45,13 @@ export default function AlbumPage() {
           <p className="text-gray-400 mt-2">{sdata.description}</p>
 
           <div className="flex gap-4 mt-6">
-            {/* PLAY BUTTON */}
             <button
               onClick={() => {
-                // if another album is playing → start this album
                 if (!isSameAlbum) {
                   setIds(albumSongIds);
                   setMainId(0);
                   setIsPlay(true);
-                }
-                // same album → toggle play / pause
-                else {
+                } else {
                   setIsPlay((prev) => !prev);
                 }
               }}
@@ -57,35 +63,27 @@ export default function AlbumPage() {
                 <Play size={16} className="text-white" />
               )}
             </button>
-
-            <button className="flex items-center gap-2 bg-white/20 px-6 py-3 rounded-full hover:bg-white/30">
-              <Shuffle size={18} /> Shuffle
-            </button>
           </div>
         </div>
       </div>
 
-      {/* SONG LIST HEADER */}
-      <div className="grid grid-cols-[40px_1fr_40px_80px] text-gray-400 text-sm px-5 pb-2 border-b border-white/10">
+      <div className="grid grid-cols-[40px_1fr_40px_80px] text-gray-400 text-sm px-0 sm:px-5 pb-2 border-b border-white/10">
         <span>#</span>
         <span>Title</span>
         <span></span>
         <span className="text-right">Time</span>
       </div>
 
-      {/* SONG LIST */}
       {sdata.songs.map((song, index) => {
         const isCurrentSong = isSameAlbum && mainId === index && isPlay;
 
         return (
           <div
             key={song.id}
-            className={`group grid grid-cols-[40px_1fr_40px_80px] items-center px-5 py-3 my-2 rounded-lg cursor-pointer
-              ${isCurrentSong ? "bg-white/10" : "hover:bg-white/10"}
-            `}
+            className={`group grid grid-cols-[40px_1fr_40px_80px] items-center p-0 sm:p-5 py-3 my-2 rounded-lg cursor-pointer
+              ${isCurrentSong ? "bg-white/10" : "hover:bg-white/10"}`}
           >
-            {/* INDEX / PLAY */}
-            <div className="relative flex items-center justify-center w-8 text-gray-400">
+            <div className="relative flex items-center justify-center w-2 sm:w-8 text-gray-400">
               {!isCurrentSong && (
                 <span className="group-hover:opacity-0 transition">
                   {index + 1}
@@ -108,15 +106,30 @@ export default function AlbumPage() {
               </span>
             </div>
 
-            {/* TITLE */}
             <div>
               <p className="font-medium">{song.name}</p>
               <p className="text-sm text-gray-400">
-                {song.artists.primary?.[0]?.name}
+                {song.artists?.primary?.[0]?.name}
               </p>
             </div>
 
-            <Heart size={18} className="text-gray-400 hover:text-green-500" />
+            <Heart
+              size={18}
+              onClick={async () => {
+                if (likedIds.includes(song.id)) {
+                  await removeFavorite(song.id);
+                  setLikedIds((prev) => prev.filter((id) => id !== song.id));
+                } else {
+                  await addFavorite(song.id);
+                  setLikedIds((prev) => [...prev, song.id]);
+                }
+              }}
+              className={`cursor-pointer ${
+                likedIds.includes(song.id)
+                  ? "ml-6 sm:ml-0 text-green-500 fill-green-500"
+                  : "ml-6 sm:ml-0 text-gray-400 hover:text-green-500"
+              }`}
+            />
 
             <span className="text-right text-gray-400">
               {Math.floor(song.duration / 60)}:

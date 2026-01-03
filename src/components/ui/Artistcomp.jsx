@@ -20,10 +20,10 @@ export default function ArtistCarousel() {
 
   return (
     <section className="mb-10">
-      <h2 className="mb-4">Popular Artists</h2>
+      <h2 className="text-x  font-semibold">Popular Artists</h2>
 
       <Carousel className="w-full px-10" opts={{ align: "start" }}>
-        <CarouselContent className="-ml-3">
+        <CarouselContent className="-ml-3 mt-5">
           {artists.map((artist, i) => (
             <CarouselItem
               key={i}

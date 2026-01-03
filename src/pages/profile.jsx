@@ -1,15 +1,6 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import {
-  User,
-  Moon,
-  LogOut,
-  Shield,
-  Bell,
-  Download,
-  Headphones,
-  PlayCircle,
-} from "lucide-react";
+import { User, Moon, LogOut, Headphones } from "lucide-react";
 import { useAuth } from "../context/FirebaseContext";
 import { useTheme } from "../context/ThemeContext";
 import { useToast } from "../context/toastContext";
@@ -146,44 +137,10 @@ export const Profile = () => {
                     />
                   </button>
                 </div>
-
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <PlayCircle className="w-5 h-5 text-muted-foreground" />
-                    <div>
-                      <p className="text-sm font-medium">Autoplay</p>
-                      <p className="text-xs text-muted-foreground">
-                        Continue playing similar tracks
-                      </p>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => setAutoplay(!autoplay)}
-                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                      autoplay ? "bg-neon-green" : "bg-muted"
-                    }`}
-                  >
-                    <motion.span
-                      layout
-                      className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                        autoplay ? "translate-x-6" : "translate-x-1"
-                      }`}
-                    />
-                  </button>
-                </div>
               </div>
             </div>
 
             <hr className="border-border" />
-
-            <div>
-              <h3 className="text-lg font-semibold mb-4">Account</h3>
-              <div className="space-y-3">
-                <AccountButton icon={Shield} label="Privacy Settings" />
-                <AccountButton icon={Bell} label="Notification Preferences" />
-                <AccountButton icon={Download} label="Download Settings" />
-              </div>
-            </div>
 
             <motion.button
               whileHover={{ scale: 1.01 }}

@@ -1,54 +1,50 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/FirebaseContext";
-
 import { Button } from "@/components/shad/button";
 import { Github, Mail, Lock, Eye, EyeOff } from "lucide-react";
-import { Link } from "react-router-dom";
-
 import { useToast } from "../context/toastContext.jsx";
-import { ThemeToggle } from "../components/ui/toogleTheme.jsx";
 
 function Login() {
   const { showSuccess, showError } = useToast();
   const { user, loading, loginWithEmail, loginWithGoogle, loginWithGithub } =
     useAuth();
+
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
-    if (user && !loading) {
-      navigate("/home");
-    }
+    if (user && !loading) navigate("/home");
   }, [user, loading, navigate]);
 
   const handleEmailLogin = async (e) => {
     e.preventDefault();
-
     try {
       await loginWithEmail(email, password);
       showSuccess("Successful");
       navigate("/home");
-    } catch (error) {
+    } catch {
       showError("Login Failed");
     }
   };
 
   return (
-    <>
-      <div className="bg-background border border-border rounded-2xl p-8 shadow-lg">
-        <h2 className="text-center mb-2">Welcome back</h2>
-        <p className="text-center text-muted-foreground mb-6">
-          Sign in to continue listening
-        </p>
+    <div className="min-h-screen flex items-center justify-center bg-background px-4">
+      <div className="w-full max-w-md rounded-2xl border border-border bg-card p-8 shadow-xl">
+        <div className="text-center mb-6">
+          <h2 className="text-2xl font-semibold">Welcome back</h2>
+          <p className="text-sm text-muted-foreground mt-1">
+            Sign in to continue listening
+          </p>
+        </div>
 
         <div className="space-y-3 mb-6">
           <Button
             type="button"
-            className="inline-flex items-center justify-center gap-2 w-full h-9 px-4 py-2 rounded-md border bg-background text-foreground hover:bg-accent transition"
             onClick={loginWithGoogle}
+            className="w-full h-10 gap-2 border bg-background hover:bg-accent text-foreground"
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24">
               <path
@@ -61,7 +57,7 @@ function Login() {
               />
               <path
                 fill="currentColor"
-                d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+                d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22z"
               />
               <path
                 fill="currentColor"
@@ -71,105 +67,80 @@ function Login() {
             Continue with Google
           </Button>
 
-          <button
+          <Button
             type="button"
-            className="inline-flex items-center justify-center gap-2 w-full h-9 px-4 py-2 rounded-md border bg-background text-foreground hover:bg-accent transition"
             onClick={loginWithGithub}
+            className="w-full h-10 gap-2 border bg-background hover:bg-accent text-foreground"
           >
-            <Github className="w-5 h-5 -mr-2" />
+            <Github className="w-5 h-5" />
             Continue with GitHub
-          </button>
+          </Button>
         </div>
 
-        <div className="relative mb-6">
-          <div className="bg-border h-px w-full" />
-          <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-card px-2 text-sm text-muted-foreground">
-            or
+        <div className="relative my-6">
+          <div className="h-px bg-border" />
+          <span className="absolute inset-0 flex items-center justify-center">
+            <span className="bg-card px-3 text-xs text-muted-foreground">
+              OR
+            </span>
           </span>
         </div>
 
-        <form className="space-y-4" onSubmit={handleEmailLogin}>
-          <div className="relative">
-            <label htmlFor="email" className="text-sm font-medium">
-              Email
-            </label>
-            <Mail className="absolute left-3 top-11.5 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <input
-              id="email"
-              type="email"
-              placeholder="you@example.com"
-              className="mt-1 w-full h-9 px-3 rounded-md border pl-9"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
+        <form onSubmit={handleEmailLogin} className="space-y-4">
+          <div>
+            <label className="text-sm font-medium">Email</label>
+            <div className="relative mt-1">
+              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <input
+                type="email"
+                placeholder="you@example.com"
+                className="w-full h-10 rounded-md border bg-background pl-9 pr-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00ff88]"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
           </div>
 
-          <div className="relative">
-            <label htmlFor="password" className="text-sm font-medium">
-              Password
-            </label>
-            <Lock className="absolute left-3 top-11.5 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <input
-              id="password"
-              type={showPassword ? "text" : "password"}
-              placeholder="••••••••"
-              className="mt-1 w-full h-9 px-3 rounded-md border pl-9"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-10 translate-y-0 text-muted-foreground hover:text-foreground transition-colors"
-            >
-              {showPassword ? (
-                <EyeOff className="h-4 w-4" />
-              ) : (
-                <Eye className="h-4 w-4" />
-              )}
-            </button>
+          <div>
+            <label className="text-sm font-medium">Password</label>
+            <div className="relative mt-1">
+              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <input
+                type={showPassword ? "text" : "password"}
+                placeholder="••••••••"
+                className="w-full h-10 rounded-md border bg-background pl-9 pr-10 text-sm focus:outline-none focus:ring-2 focus:ring-[#00ff88]"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+              >
+                {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+              </button>
+            </div>
           </div>
 
           <Button
             type="submit"
-            className="w-full h-9 rounded-md bg-[#00ff88] hover:bg-[#00cc6f] text-black font-medium"
+            className="w-full h-10 bg-[#00ff88] hover:bg-[#00cc6f] text-black font-semibold"
           >
             Sign In
           </Button>
         </form>
 
-        <p className="text-center text-sm text-muted-foreground mt-6">
+        <p className="mt-6 text-center text-sm text-muted-foreground">
           Don&apos;t have an account?{" "}
           <Link to="/signup" className="text-[#00ff88] hover:underline">
             Sign up
           </Link>
         </p>
       </div>
-    </>
+    </div>
   );
 }
 
 export default Login;
-
-//logout feature
-
-// import { useAuth } from "../AuthContext";
-
-// function Navbar() {
-//   const { user, logout } = useAuth();
-
-//   return (
-//     <nav>
-//       {user ? (
-//         <>
-//           <span>{user.displayName || user.email}</span>
-//           <button onClick={logout}>Logout</button>
-//         </>
-//       ) : (
-//         <a href="/login">Login</a>
-//       )}
-//     </nav>
-//   );
-// }

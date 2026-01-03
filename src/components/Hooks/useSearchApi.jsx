@@ -6,7 +6,7 @@ export default function useSearchApi(categorie) {
   const [value, setValue] = useState(null);
 
   useEffect(() => {
-    if (!categorie) return; // do nothing if no category selected
+    if (!categorie) return;
 
     const fetchData = async () => {
       try {
@@ -20,7 +20,7 @@ export default function useSearchApi(categorie) {
     };
 
     fetchData();
-  }, [categorie]); // refetch whenever category changes
+  }, [categorie]);
 
   return value;
 }

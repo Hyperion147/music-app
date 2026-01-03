@@ -14,7 +14,6 @@ export default function PlayerBar({
   const [volume, setVolume] = useState(50);
   const [id, setId] = useState(null);
   const [progress, setProgress] = useState(0);
-
   const audioRef = useRef(null);
 
   useEffect(() => {
@@ -22,13 +21,10 @@ export default function PlayerBar({
     setId(value[mainId]);
   }, [mainId, value]);
 
-  const NextSong = () => {
+  const NextSong = () =>
     setMainId(mainId === value.length - 1 ? 0 : mainId + 1);
-  };
-
-  const BackSong = () => {
+  const BackSong = () =>
     setMainId(mainId === 0 ? value.length - 1 : mainId - 1);
-  };
 
   const api_data = Song_details(id);
   const song = api_data?.data?.[0];
@@ -36,7 +32,6 @@ export default function PlayerBar({
 
   useEffect(() => {
     if (!song) return;
-
     const songUrl = song.downloadUrl?.[4]?.url;
     if (!songUrl) return;
 
@@ -44,13 +39,9 @@ export default function PlayerBar({
     audio.volume = volume / 100;
     audioRef.current = audio;
 
-    const updateProgress = () => {
-      setProgress(audio.currentTime);
-    };
-
-    const handleEnded = () => {
+    const updateProgress = () => setProgress(audio.currentTime);
+    const handleEnded = () =>
       setMainId((prev) => (prev === value.length - 1 ? 0 : prev + 1));
-    };
 
     audio.addEventListener("timeupdate", updateProgress);
     audio.addEventListener("ended", handleEnded);
@@ -70,15 +61,13 @@ export default function PlayerBar({
   }, [isPlay]);
 
   useEffect(() => {
-    if (audioRef.current) {
-      audioRef.current.volume = volume / 100;
-    }
+    if (audioRef.current) audioRef.current.volume = volume / 100;
   }, [volume]);
 
   if (!song) return null;
 
   return (
-    <div className="fixed bottom-0 left-0 md:left-64 right-0 bg-[#111] text-white z-40">
+    <div className="fixed bottom-14 md:bottom-0 left-0 md:left-64 right-0 bg-card text-card-foreground z-30 shadow-inner">
       <div className="px-4 md:px-6 pt-2">
         <ProgressBar
           progress={progress}
@@ -92,23 +81,27 @@ export default function PlayerBar({
         <div className="flex items-center gap-3 w-1/3 min-w-0">
           <img
             src={song.image?.[0]?.url}
-            alt="song"
+            alt={song.name}
             className="w-10 h-10 rounded"
           />
           <div className="truncate">
             <p className="text-sm font-medium truncate">{song.name}</p>
-            <p className="text-xs text-gray-400 truncate">
+            <p className="text-xs text-muted-foreground truncate">
               {song.artists?.primary?.[0]?.name}
             </p>
           </div>
         </div>
 
         <div className="flex items-center gap-4 w-1/3 justify-center">
-          <SkipBack onClick={BackSong} size={18} />
+          <SkipBack
+            onClick={BackSong}
+            size={18}
+            className="text-muted-foreground hover:text-foreground cursor-pointer"
+          />
 
           <div
             onClick={() => setIsPlay(!isPlay)}
-            className="w-9 h-9 rounded-full bg-[#00FF88] flex items-center justify-center text-black"
+            className="w-9 h-9 rounded-full bg-neon-green flex items-center justify-center text-black cursor-pointer transition"
           >
             {isPlay ? (
               <svg width="18" height="18" fill="currentColor">
@@ -122,9 +115,14 @@ export default function PlayerBar({
             )}
           </div>
 
-          <SkipForward onClick={NextSong} size={18} />
+          <SkipForward
+            onClick={NextSong}
+            size={18}
+            className="text-muted-foreground hover:text-foreground cursor-pointer"
+          />
         </div>
 
+        {/* Volume */}
         <div className="hidden md:flex w-1/3 justify-end">
           <VolumeControl
             volume={volume}
