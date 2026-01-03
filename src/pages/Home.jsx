@@ -14,7 +14,6 @@ import SongList from "../components/ui/SongList";
 function Home({ playlists, setPlaylists, showPlaylist, setShowPlaylist }) {
 
   const { user, logout } = useAuth();
-  const { songs, loading } = useMusicPlayer();
 
   return (
     <div className="relative flex items-center justify-center">
