@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { Search } from "lucide-react";
-import useSearchApi from "../components/Hooks/useSearchApi"; // updated import
+import useSearchApi from "../components/Hooks/useSearchApi";
 import { useNavigate } from "react-router-dom";
+import SearchBar from "../components/ui/SearchBar";
 
 const categories = [
   { title: "Punjabi", gradient: "from-red-500 to-yellow-600" },
@@ -9,15 +9,9 @@ const categories = [
   { title: "Party", gradient: "from-lime-500 to-emerald-700" },
   { title: "Dance", gradient: "from-green-500 to-teal-700" },
   { title: "Workout", gradient: "from-emerald-500 to-blue-700" },
-  { title: "Classical", gradient: "from-cyan-500 to-indigo-700" },
-  { title: "R&B", gradient: "from-blue-500 to-purple-700" },
-  { title: "Country", gradient: "from-indigo-500 to-pink-700" },
-  { title: "Indie", gradient: "from-purple-500 to-red-700" },
-  { title: "Metal", gradient: "from-pink-500 to-orange-700" },
 ];
 
 export default function SearchPage() {
-  const [query, setQuery] = useState("");
   const [categorie, setCategorie] = useState(null);
   const navigate = useNavigate();
 
@@ -30,31 +24,35 @@ export default function SearchPage() {
   };
 
   return (
-    <div className="p-4 md:p-8">
-      <div className="mb-6 md:mb-8">
-        <div className="relative mx-auto max-w-2xl">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-          <input
-            type="text"
-            placeholder="What do you want to listen to?"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            className="w-full h-12 pl-12 pr-4 rounded-md bg-muted border-0 outline-none focus:ring-2 focus:ring-ring"
-          />
-        </div>
-      </div>
-
+    <div className="p-6 md:p-10 bg-background text-foreground">
       <section>
-        <h2 className="mb-4 text-lg font-semibold">Categories</h2>
+        <h2 className="mb-5 text-xl font-semibold">Browse Categories</h2>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
           {categories.map((item) => (
             <div
-              onClick={() => handleClick(item.title)}
               key={item.title}
-              className={`aspect-square rounded-xl p-4 md:p-6 cursor-pointer hover:scale-105 transition-transform bg-linear-to-br ${item.gradient}`}
+              onClick={() => handleClick(item.title)}
+              className={`
+                group relative aspect-square cursor-pointer
+                rounded-2xl overflow-hidden
+                bg-linear-to-br ${item.gradient}
+                transition transform hover:scale-[1.04]
+                shadow-md hover:shadow-xl
+              `}
             >
-              <h3 className="text-white font-semibold text-lg">{item.title}</h3>
+              <div
+                className="
+                absolute inset-0 bg-black/20
+                group-hover:bg-black/30 transition
+              "
+              />
+
+              <div className="relative z-10 h-full flex items-end p-4">
+                <h3 className="text-white text-lg font-semibold tracking-wide">
+                  {item.title}
+                </h3>
+              </div>
             </div>
           ))}
         </div>

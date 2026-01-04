@@ -1,6 +1,13 @@
 import { Play, Pause, Shuffle, Heart } from "lucide-react";
 import { useParams, useOutletContext } from "react-router-dom";
 import ArtistSongs from "../components/Hooks/DetailArtistApi";
+import {
+  addFavorite,
+  removeFavorite,
+  getFavorites,
+} from "../firebase/favorites";
+import { useEffect, useState } from "react";
+import Loader from "../components/ui/Loader";
 
 export default function ArtistPage() {
   const { id } = useParams();
@@ -12,16 +19,20 @@ export default function ArtistPage() {
   const artist = ArtistSongs(id);
   const sdata = artist?.data;
 
-  if (!sdata) return <p className="p-8">Loading Artist...</p>;
+  const [likedIds, setLikedIds] = useState([]);
+
+  useEffect(() => {
+    getFavorites().then(setLikedIds);
+  }, []);
+
+  if (!sdata) return <Loader songsCount={sdata?.songs?.length || 10} />;
 
   const artistSongIds = sdata.topSongs.map((song) => song.id);
 
-  // check if current playing song belongs to this artist
   const isSameArtist = ids.length && artistSongIds.includes(ids[mainId]);
 
   return (
-    <div className="p-8">
-      {/* ARTIST HEADER */}
+    <div className="p-0 sm:p-5 mb-20">
       <div className="flex flex-col md:flex-row gap-6 py-10">
         <img
           src={sdata.image?.[2]?.url}
@@ -35,17 +46,13 @@ export default function ArtistPage() {
           <p className="text-gray-400 mt-2">{sdata.followerCount} followers</p>
 
           <div className="flex gap-4 mt-6">
-            {/* PLAY BUTTON */}
             <button
               onClick={() => {
-                // new artist → play first song
                 if (!isSameArtist) {
                   setIds(artistSongIds);
                   setMainId(0);
                   setIsPlay(true);
-                }
-                // same artist → toggle play / pause
-                else {
+                } else {
                   setIsPlay((prev) => !prev);
                 }
               }}
@@ -57,35 +64,27 @@ export default function ArtistPage() {
                 <Play size={16} className="text-white" />
               )}
             </button>
-
-            <button className="flex items-center gap-2 bg-white/20 px-6 py-3 rounded-full hover:bg-white/30">
-              <Shuffle size={18} /> Shuffle
-            </button>
           </div>
         </div>
       </div>
 
-      {/* TABLE HEADER */}
-      <div className="grid grid-cols-[40px_1fr_40px_80px] text-gray-400 text-sm px-5 pb-2 border-b border-white/10">
+      <div className="grid grid-cols-[40px_1fr_40px_80px] text-gray-400 text-sm px-0 sm:px-5 pb-2 border-b border-white/10">
         <span>#</span>
         <span>Title</span>
         <span></span>
         <span className="text-right">Time</span>
       </div>
 
-      {/* SONG LIST */}
       {sdata.topSongs.map((song, index) => {
         const isCurrentSong = isSameArtist && mainId === index && isPlay;
 
         return (
           <div
             key={song.id}
-            className={`group grid grid-cols-[40px_1fr_40px_80px] items-center px-5 py-3 my-2 rounded-lg cursor-pointer
-              ${isCurrentSong ? "bg-white/10" : "hover:bg-white/10"}
-            `}
+            className={`group grid grid-cols-[40px_1fr_40px_80px] items-center p-0 sm:p-5 py-3 my-2 rounded-lg cursor-pointer
+              ${isCurrentSong ? "bg-white/10" : "hover:bg-white/10"}`}
           >
-            {/* INDEX / PLAY */}
-            <div className="relative flex items-center justify-center w-8 text-gray-400">
+            <div className="relative flex items-center justify-center w-2 sm:w-8 text-gray-400">
               {!isCurrentSong && (
                 <span className="group-hover:opacity-0 transition">
                   {index + 1}
@@ -108,10 +107,9 @@ export default function ArtistPage() {
               </span>
             </div>
 
-            {/* TITLE WITH IMAGE */}
             <div className="flex items-center gap-3">
               <img
-                src={song.image?.[2]?.url} // small song image
+                src={song.image?.[2]?.url}
                 alt={song.name}
                 className="w-10 h-10 rounded-md"
               />
@@ -123,10 +121,24 @@ export default function ArtistPage() {
               </div>
             </div>
 
-            {/* HEART ICON */}
-            <Heart size={18} className="text-gray-400 hover:text-green-500" />
+            <Heart
+              size={18}
+              onClick={async () => {
+                if (likedIds.includes(song.id)) {
+                  await removeFavorite(song.id);
+                  setLikedIds((prev) => prev.filter((id) => id !== song.id));
+                } else {
+                  await addFavorite(song.id);
+                  setLikedIds((prev) => [...prev, song.id]);
+                }
+              }}
+              className={`cursor-pointer ${
+                likedIds.includes(song.id)
+                  ? "ml-6 sm:ml-0 text-green-500 fill-green-500"
+                  : "ml-6 sm:ml-0 text-gray-400 hover:text-green-500"
+              }`}
+            />
 
-            {/* DURATION */}
             <span className="text-right text-gray-400">
               {Math.floor(song.duration / 60)}:
               {(song.duration % 60).toString().padStart(2, "0")}

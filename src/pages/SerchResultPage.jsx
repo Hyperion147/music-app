@@ -1,19 +1,24 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { Play } from "lucide-react";
-import useSearchApi from "../components/Hooks/useSearchApi";
-import CategoryLoader from "../components/ui/CategoryLoader";
+import SerchResult from "../components/Hooks/SerchResult";
+import SearchLoader from "../components/ui/SearchLoader";
 
-export default function CategoryPage() {
-  const { category } = useParams();
-  const albumsData = useSearchApi(category);
+export default function Serch() {
+  const { query } = useParams();
+  const albumsData = SerchResult(query);
   const albums = albumsData?.data?.results || [];
   const navigate = useNavigate();
 
-  if (!albums) return <CategoryLoader />;
+  if (!albums.length)
+    return (
+      <p className="text-center mt-10">
+        <SearchLoader />
+      </p>
+    );
 
   return (
     <div className="p-4 md:p-8">
-      <h2 className="mb-6 text-2xl font-bold">{category} Albums</h2>
+      <h2 className="mb-6 text-2xl font-bold">{query} </h2>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
         {albums.map((album) => (
